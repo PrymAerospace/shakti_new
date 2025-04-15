@@ -6,7 +6,7 @@ import { RiLockPasswordFill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function CredentialsForm() {
+function CredentialsForm({ showOrgCode = true }) {
     const [orgCode, setOrgCode] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +23,7 @@ function CredentialsForm() {
         setError(null);
     
         try {
-            const response = await fetch('http://localhost:8000/api/auth/login', {
+            const response = await fetch('http://localhost:4000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orgCode, username, password }),
@@ -65,40 +65,63 @@ function CredentialsForm() {
 
     return (
         <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4 pt-8">
-            <div className="flex gap-2 items-center">
+             {showOrgCode && (
+                    <>
+                        <div className="flex gap-2 items-center">
+                            <FaBuildingUser className="text-[#1c4684]" />
+                            <label className='font-bold' htmlFor="org_code">Organizational Code:</label>
+                        </div>
+                        <div className='border-b-2'>
+                        <input 
+                            type="text" 
+                            value={orgCode} 
+                            onChange={(e) => setOrgCode(e.target.value)} 
+                            placeholder="Enter Organizational Code" 
+                            className="border-b-2 w-full rounded p-2"
+                        />
+                        </div>
+                    </>
+                )}
+            {/* <div className="flex gap-2 items-center">
                 <FaBuildingUser className="text-[#1c4684]" />
                 <label className='font-bold' htmlFor="org_code">Organizational Code:</label>
             </div>
+            <div className='border-b-2'>
             <input 
                 type="text" 
                 value={orgCode} 
                 onChange={(e) => setOrgCode(e.target.value)} 
                 placeholder="Enter Organizational Code" 
-                className="border rounded p-2"
+                className="border w-full border-b-2 rounded p-2 "
             />
+            </div> */}
             <div className="flex gap-2 items-center">
                 <FaUser className="text-[#1c4684]" />
                 <label className='font-bold' htmlFor="username">Username:</label>
             </div>
+            <div className='border-b-2'>
             <input 
                 type="text" 
                 value={username} 
                 onChange={(e) => setUsername(e.target.value)} 
                 placeholder="Enter Username" 
-                className="border rounded p-2"
+                className="border w-full rounded p-2 "
             />
+            </div>
             <div className="flex gap-2 items-center">
                 <RiLockPasswordFill className="text-[#1c4684]" />
                 <label className='font-bold' htmlFor="password">Password:</label>
             </div>
             <div className="relative">
+                <div className='border-b-2'>
                 <input 
                     type={passwordVisible ? 'text' : 'password'} 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
                     placeholder="Enter Password" 
-                    className="border rounded p-2 pr-10 w-full"
+                    className="border border-b-2 rounded p-2  pr-10 w-full"
                 />
+                </div>
                 <button 
                     type="button" 
                     onClick={togglePasswordVisibility} 
@@ -107,12 +130,14 @@ function CredentialsForm() {
                     {passwordVisible ? <LuEye /> : <LuEyeClosed />}
                 </button>
             </div>
+            <div className='flex items-center justify-center'>
             <button 
                 type="submit" 
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white text-xl font-bold py-2 px-4 rounded w-1/3"
             >
                 Login
             </button>
+            </div>
         </form>
     );
 }

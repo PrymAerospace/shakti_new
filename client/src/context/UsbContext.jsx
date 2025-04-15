@@ -3,12 +3,24 @@ import io from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const socket = io("http://localhost:8000");
+const socket = io("http://localhost:4000");
 const UsbContext = createContext();
 
 export function UsbProvider({ children }) {
-    const [usbVerified, setUsbVerified] = useState(false);
-    const [countdown, setCountdown] = useState(null);
+    // const [usbVerified, setUsbVerified] = useState(false);
+    const [usbVerified, setUsbVerified] = useState(
+        () => JSON.parse(localStorage.getItem("usbVerified")) || false
+    );
+    const [countdown, setCountdown] = useState(
+        () => JSON.parse(localStorage.getItem("countdown")) || null
+    );
+
+    useEffect(() => {
+        localStorage.setItem("usbVerified", JSON.stringify(usbVerified));
+        localStorage.setItem("countdown", JSON.stringify(countdown));
+    }, [usbVerified, countdown]);
+
+    // const [countdown, setCountdown] = useState(null);
     const toastIdRef = useRef(null);
     const countdownTimerRef = useRef(null);
     const usbRemovedRef = useRef(false);
@@ -73,7 +85,7 @@ export function UsbProvider({ children }) {
         });
 
         // Initial status check on page load
-        fetch("http://localhost:8000/api/usb/status")
+        fetch("http://localhost:4000/api/usb/status")
             .then((res) => res.json())
             .then((data) => {
                 if (data.usbConnected) {
